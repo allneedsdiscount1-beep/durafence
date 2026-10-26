@@ -13,7 +13,7 @@ import { steps } from '../data/process';
   title="Dura Fence Metal | Privacy Fences, Gates & Parts in South Georgia"
   description="Metal privacy fences, pedestrian and driveway gates, planks and parts in South Georgia. Explore the catalog and calculate a Standard or Premium estimate."
 >
-  <section class="stage hero-grid relative overflow-x-hidden px-5 pt-[calc(var(--header-h)+3rem)] sm:px-8 sm:pt-[calc(var(--header-h)+4rem)]">
+  <section class="theme-dark stage hero-grid relative overflow-x-hidden px-5 pt-[calc(var(--header-h)+3rem)] sm:px-8 sm:pt-[calc(var(--header-h)+4rem)]">
     <div class="relative mx-auto flex max-w-[1120px] flex-col items-center text-center">
       <BrandLockup />
       <p class="mt-10 max-w-2xl text-lg text-balance text-muted sm:text-xl">Metal privacy fences, matching gates and fence parts in South Georgia. Compare your options and build an estimate for materials or installation.</p>
@@ -56,8 +56,8 @@ import { steps } from '../data/process';
             <a class="product-card" href={item.href}>
               <CatalogImage image={item.image} alt={item.alt} />
               <div class="flex flex-1 flex-col gap-3 px-3 pt-6 pb-4">
-                <p class="font-display text-[.7rem] tracking-[.2em] text-[#8e9094]">{String(index + 1).padStart(2, '0')}</p>
-                <h3 class="text-2xl font-semibold tracking-tight text-[#ececed]">{item.name}</h3>
+                <p class="font-display text-[.7rem] tracking-[.2em] text-subtle">{String(index + 1).padStart(2, '0')}</p>
+                <h3 class="text-2xl font-semibold tracking-tight text-heading">{item.name}</h3>
                 <p class="flex-1 text-muted">{item.spec}</p>
                 <span class="more-link mt-2">Explore {item.name.toLowerCase()} <span aria-hidden="true">→</span></span>
               </div>
@@ -69,7 +69,7 @@ import { steps } from '../data/process';
     </div>
   </section>
 
-  <section class="border-t border-line bg-[#0e0f10]" aria-labelledby="process-heading">
+  <section class="border-t border-line bg-surface-2" aria-labelledby="process-heading">
     <div class="frame">
       <p class="kicker">From selection to installation</p>
       <h2 id="process-heading" class="section-title mt-4">Plan your project</h2>
@@ -80,7 +80,7 @@ import { steps } from '../data/process';
               <span class:list={['step-badge', { 'step-badge-final': index === steps.length - 1 }]}>{step.n}</span>
               {index < steps.length - 1 && <span class="gold-rule h-px flex-1 opacity-50" aria-hidden="true"></span>}
             </div>
-            <h3 class="mt-2 text-xl font-semibold tracking-tight text-[#ececed]">{step.title}</h3>
+            <h3 class="mt-2 text-xl font-semibold tracking-tight text-heading">{step.title}</h3>
             <p class="text-muted">{step.body}</p>
           </li>
         ))}
@@ -92,7 +92,7 @@ import { steps } from '../data/process';
     <div class="frame grid items-center gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
       <div>
         <p class="kicker">Service area</p>
-        <h2 id="area-heading" class="font-display mt-5 text-[clamp(1.6rem,3.4vw,2.5rem)] leading-tight tracking-[.08em] text-[#ececed] uppercase">{site.region}</h2>
+        <h2 id="area-heading" class="font-display mt-5 text-[clamp(1.6rem,3.4vw,2.5rem)] leading-tight tracking-[.08em] text-heading uppercase">{site.region}</h2>
         <span class="gold-rule mt-6 block h-px w-28" aria-hidden="true"></span>
         <p class="lede">Fence materials and installation for properties across South Georgia. Contact us to confirm service at your location.</p>
         <p class="mt-7"><a class="more-link" href="/service-area/">Service area <span aria-hidden="true">→</span></a></p>
@@ -109,7 +109,7 @@ import { steps } from '../data/process';
   </section>
 
   <section class="px-5 pb-20 sm:px-8 sm:pb-28" aria-labelledby="close-heading">
-    <div class="stage cta-panel mx-auto max-w-[1120px] text-center">
+    <div class="theme-dark stage cta-panel mx-auto max-w-[1120px] text-center">
       <p class="metal-title text-[clamp(2rem,6vw,3.4rem)] leading-none font-normal tracking-[.04em] uppercase">{site.shortName}</p>
       <div class="relative mx-auto mt-4 flex max-w-md items-center justify-center gap-4">
         <span class="gold-rule h-px min-w-0 flex-1" aria-hidden="true"></span>

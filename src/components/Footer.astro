@@ -1,15 +1,19 @@
 ---
+import Monogram from './Monogram.astro';
 import { nav, site, telHref } from '../data/site';
 
 const phone = site.phone.trim();
 const email = site.email.trim();
 ---
 
-<footer class="border-t border-line bg-[#070707]">
+<footer class="theme-dark border-t border-line bg-[#070707]">
   <div class="frame !pt-16 !pb-8 sm:!pt-20">
     <div class="grid gap-12 md:grid-cols-[1.2fr_1fr_1fr]">
       <div>
-        <p class="font-display text-lg tracking-[.06em] text-steel">{site.shortName}</p>
+        <a href="/" class="flex w-fit items-center gap-3 text-steel no-underline" aria-label={`${site.name} home`}>
+          <Monogram idPrefix="footer" crop class="h-11 w-12" />
+          <span class="font-display text-lg tracking-[.06em]">{site.shortName}</span>
+        </a>
         <p class="mt-4 max-w-[16rem] text-sm leading-relaxed text-balance text-muted">{site.tagline}</p>
       </div>
       <nav aria-label="Footer">

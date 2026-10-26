@@ -10,7 +10,7 @@ const phone = site.phone.trim();
 <header data-header class="fixed inset-x-0 top-0 z-40">
   <div class="mx-auto flex h-[var(--header-h)] w-full max-w-[1120px] items-center gap-6 px-5 pt-[env(safe-area-inset-top,0px)] sm:px-8">
     <a href="/" class="flex shrink-0 items-center gap-3 text-steel no-underline" aria-label={`${site.name} home`}>
-      <Monogram idPrefix="nav" crop class="h-10 w-11" />
+      <span class="brand-mark h-11 w-12"><Monogram idPrefix="nav" crop class="h-9 w-10" /></span>
       <span class="font-display hidden text-[14px] tracking-[.06em] sm:inline">{site.shortName}</span>
     </a>
 
@@ -27,6 +27,10 @@ const phone = site.phone.trim();
           <span class="hidden xl:inline">{phone}</span>
         </a>
       )}
+      <button type="button" class="icon-button theme-toggle" data-theme-toggle aria-label="Switch to light mode" title="Switch to light mode">
+        <svg viewBox="0 0 24 24" class="icon-sun h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"></path></svg>
+        <svg viewBox="0 0 24 24" class="icon-moon h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"></path></svg>
+      </button>
       <span class="hidden sm:contents"><a class="btn-steel" href="/quote/" aria-current={isCurrent('/quote/') ? 'page' : undefined}>Request a quote</a></span>
       <span class="contents sm:hidden"><a class="btn-steel" href="/quote/">Quote</a></span>
       <span class="contents lg:hidden">
@@ -62,6 +66,28 @@ const phone = site.phone.trim();
   const main = document.querySelector('main');
   const footer = document.querySelector('footer');
   const skip = document.querySelector('.skip');
+
+  const themeToggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const themeColor = document.querySelector('meta[name="theme-color"]');
+
+  function applyTheme(theme: 'light' | 'dark') {
+    document.documentElement.dataset.theme = theme;
+    themeColor?.setAttribute('content', theme === 'light' ? '#f4f3ef' : '#090909');
+    const label = theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
+    themeToggle?.setAttribute('aria-label', label);
+    themeToggle?.setAttribute('title', label);
+  }
+
+  applyTheme(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+  themeToggle?.addEventListener('click', () => {
+    const next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    try {
+      localStorage.setItem('dfm-theme', next);
+    } catch {
+      // Private browsing can block storage; the switch still applies to this page.
+    }
+  });
 
   const onScroll = () => header?.classList.toggle('is-stuck', window.scrollY > 8);
   onScroll();

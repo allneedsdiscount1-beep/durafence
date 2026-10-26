@@ -112,6 +112,17 @@ const jsonLd = JSON.stringify(graph).replace(/</g, '\\u003c');
     <meta name="facebook-domain-verification" content="8v9apnuwopqc20a08qo17j4nx5h524" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#090909" />
+    <script is:inline>
+      // Apply the saved theme before first paint. Dark is the brand default.
+      (function () {
+        var theme = 'dark';
+        try {
+          if (localStorage.getItem('dfm-theme') === 'light') theme = 'light';
+        } catch (error) {}
+        document.documentElement.dataset.theme = theme;
+        if (theme === 'light') document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#f4f3ef');
+      })();
+    </script>
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content={robots} />

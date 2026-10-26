@@ -1,25 +1,108 @@
 @import "tailwindcss";
 
+/* Dark is the brand default. Light mode only swaps these tokens; brand stages
+   (hero, closing panel, footer) opt back into dark with `.theme-dark` so the
+   metallic logo and lockup always sit on the contrast they were drawn for. */
 @theme {
   --font-sans: "Barlow", "Arial Narrow", Arial, sans-serif;
   --font-display: "Michroma", Arial, sans-serif;
   --color-ink: #090909;
+  --color-surface: #111213;
+  --color-surface-2: #0e0f10;
   --color-steel: #d5d6d8;
+  --color-heading: #ececed;
   --color-muted: #b9bbbf;
+  --color-subtle: #8e9094;
   --color-gold: #d9ac66;
   --color-gold-deep: #b9854b;
+  --color-on-gold: #111111;
   --color-line: rgb(119 119 119 / 55%);
+  --color-hairline: rgb(255 255 255 / 9%);
   --color-plate: #e6e7e8;
+  --color-on-plate: #111111;
+  --color-error: #ffc2b8;
 }
 
 :root {
   --header-h: calc(4rem + env(safe-area-inset-top, 0px));
+  --plate-hover: #ffffff;
+  --text-hover: #ffffff;
+  --gold-hover: #f0cf96;
+  --ghost-text: #e9d2a8;
+  --ghost-border: rgb(217 172 102 / 55%);
+  --header-bg: rgb(9 9 9 / 88%);
+  --header-line: rgb(255 255 255 / 8%);
+  --card-shadow: none;
+  --card-shadow-hover: none;
+  --notice-bg: #252019;
+}
+
+:root[data-theme="light"] {
+  --color-ink: #f4f3ef;
+  --color-surface: #ffffff;
+  --color-surface-2: #ebe9e3;
+  --color-steel: #1d1e20;
+  --color-heading: #0e0f10;
+  --color-muted: #4b4e53;
+  --color-subtle: #66696e;
+  --color-gold: #855619;
+  --color-gold-deep: #a8743a;
+  --color-on-gold: #ffffff;
+  --color-line: rgb(29 30 32 / 22%);
+  --color-hairline: rgb(29 30 32 / 10%);
+  --color-plate: #141414;
+  --color-on-plate: #f4f3ef;
+  --color-error: #a3271a;
+  --plate-hover: #000000;
+  --text-hover: #000000;
+  --gold-hover: #5f3d10;
+  --ghost-text: #6b4512;
+  --ghost-border: rgb(133 86 25 / 55%);
+  --header-bg: rgb(244 243 239 / 88%);
+  --header-line: rgb(29 30 32 / 10%);
+  --card-shadow: 0 1px 2px rgb(20 20 20 / 4%), 0 10px 28px -16px rgb(20 20 20 / 18%);
+  --card-shadow-hover: 0 2px 4px rgb(20 20 20 / 5%), 0 22px 40px -20px rgb(20 20 20 / 28%);
+  --notice-bg: #f3ead9;
+  color-scheme: light;
+}
+
+/* Brand stages keep the dark palette in either mode. */
+:root[data-theme="light"] .theme-dark {
+  --color-ink: #090909;
+  --color-surface: #111213;
+  --color-surface-2: #0e0f10;
+  --color-steel: #d5d6d8;
+  --color-heading: #ececed;
+  --color-muted: #b9bbbf;
+  --color-subtle: #8e9094;
+  --color-gold: #d9ac66;
+  --color-gold-deep: #b9854b;
+  --color-on-gold: #111111;
+  --color-line: rgb(119 119 119 / 55%);
+  --color-hairline: rgb(255 255 255 / 9%);
+  --color-plate: #e6e7e8;
+  --color-on-plate: #111111;
+  --color-error: #ffc2b8;
+  --plate-hover: #ffffff;
+  --text-hover: #ffffff;
+  --gold-hover: #f0cf96;
+  --ghost-text: #e9d2a8;
+  --ghost-border: rgb(217 172 102 / 55%);
+  --card-shadow: none;
+  --card-shadow-hover: none;
+  --notice-bg: #252019;
+  color-scheme: dark;
+  color: var(--color-steel);
 }
 
 @layer base {
   html {
     background: var(--color-ink);
     color-scheme: dark;
+  }
+
+  :root[data-theme="light"] {
+    color-scheme: light;
   }
 
   body {
@@ -64,7 +147,7 @@ textarea {
   top: -4rem;
   z-index: 70;
   background: var(--color-plate);
-  color: #111;
+  color: var(--color-on-plate);
   padding: 0.5rem 0.8rem;
   font-size: 0.8rem;
   letter-spacing: 0.08em;
@@ -101,7 +184,7 @@ textarea {
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 0.98;
-  color: var(--color-steel);
+  color: var(--color-heading);
 }
 
 .lede {
@@ -134,7 +217,7 @@ textarea {
   min-height: 2.75rem;
   padding: 0 1.15rem;
   background: var(--color-plate);
-  color: #111;
+  color: var(--color-on-plate);
   font-family: inherit;
   font-size: 0.75rem;
   font-weight: 600;
@@ -148,7 +231,7 @@ textarea {
 }
 
 .btn-steel:hover {
-  background: #fff;
+  background: var(--plate-hover);
 }
 
 .btn-ghost {
@@ -157,9 +240,9 @@ textarea {
   justify-content: center;
   min-height: 2.75rem;
   padding: 0 1.15rem;
-  border: 1px solid rgb(217 172 102 / 55%);
+  border: 1px solid var(--ghost-border);
   border-radius: 4px;
-  color: #e9d2a8;
+  color: var(--ghost-text);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.16em;
@@ -171,7 +254,7 @@ textarea {
 .btn-ghost:hover {
   border-color: var(--color-gold);
   background: rgb(217 172 102 / 8%);
-  color: #fff;
+  color: var(--text-hover);
 }
 
 .phone-link {
@@ -190,7 +273,7 @@ textarea {
 }
 
 .phone-link:hover {
-  color: #fff;
+  color: var(--text-hover);
 }
 
 .icon-button {
@@ -199,16 +282,48 @@ textarea {
   justify-content: center;
   width: 2.75rem;
   height: 2.75rem;
-  border: 1px solid rgb(255 255 255 / 14%);
+  border: 1px solid var(--color-hairline);
   border-radius: 4px;
   background: transparent;
   color: var(--color-steel);
   cursor: pointer;
+  transition: border-color 150ms linear, color 150ms linear;
 }
 
 .icon-button:hover {
   border-color: var(--color-gold);
-  color: #fff;
+  color: var(--text-hover);
+}
+
+/* Theme switch: shows the mode it will switch to. */
+.theme-toggle .icon-sun {
+  display: block;
+}
+
+.theme-toggle .icon-moon {
+  display: none;
+}
+
+:root[data-theme="light"] .theme-toggle .icon-sun {
+  display: none;
+}
+
+:root[data-theme="light"] .theme-toggle .icon-moon {
+  display: block;
+}
+
+/* The header mark sits on a dark plate in light mode, as on the printed estimate. */
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background-color 150ms linear;
+}
+
+:root[data-theme="light"] .brand-mark {
+  background: #111111;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 6%), 0 1px 2px rgb(0 0 0 / 20%);
 }
 
 .section-title {
@@ -216,7 +331,7 @@ textarea {
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.02;
-  color: #ececed;
+  color: var(--color-heading);
 }
 
 .hero-grid::before {
@@ -249,16 +364,18 @@ textarea {
   flex: 1;
   flex-direction: column;
   padding: 0.75rem;
-  border: 1px solid rgb(255 255 255 / 8%);
+  border: 1px solid var(--color-hairline);
   border-radius: 16px;
-  background: #111213;
+  background: var(--color-surface);
+  box-shadow: var(--card-shadow);
   color: var(--color-steel);
   text-decoration: none;
-  transition: border-color 200ms ease, transform 200ms ease;
+  transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
 }
 
 .product-card:hover {
   border-color: rgb(217 172 102 / 50%);
+  box-shadow: var(--card-shadow-hover);
   transform: translateY(-3px);
 }
 
@@ -283,7 +400,7 @@ textarea {
 }
 
 a.more-link:hover {
-  color: #f0cf96;
+  color: var(--gold-hover);
 }
 
 .step-badge {
@@ -293,8 +410,9 @@ a.more-link:hover {
   justify-content: center;
   width: 3.25rem;
   height: 3.25rem;
-  border: 1px solid rgb(217 172 102 / 60%);
+  border: 1px solid var(--ghost-border);
   border-radius: 50%;
+  background: var(--color-surface);
   font-family: var(--font-display);
   font-size: 0.8rem;
   color: var(--color-gold);
@@ -303,7 +421,7 @@ a.more-link:hover {
 .step-badge-final {
   border-color: var(--color-gold);
   background: var(--color-gold);
-  color: #111;
+  color: var(--color-on-gold);
 }
 
 .city-chip {
@@ -311,9 +429,11 @@ a.more-link:hover {
   align-items: center;
   gap: 0.6rem;
   padding: 0.85rem 1rem;
-  border: 1px solid rgb(255 255 255 / 9%);
+  border: 1px solid var(--color-hairline);
   border-radius: 8px;
-  background: #0e0f10;
+  background: var(--color-surface);
+  box-shadow: var(--card-shadow);
+  color: var(--color-steel);
   font-size: 0.8rem;
   font-weight: 500;
   letter-spacing: 0.16em;
@@ -326,6 +446,11 @@ a.more-link:hover {
   border: 1px solid rgb(255 255 255 / 10%);
   border-radius: 20px;
   padding: clamp(3rem, 7vw, 6rem) clamp(1.5rem, 6vw, 5rem);
+}
+
+:root[data-theme="light"] .cta-panel {
+  border-color: transparent;
+  box-shadow: 0 30px 60px -30px rgb(0 0 0 / 45%);
 }
 
 .cta-panel::before {
@@ -352,7 +477,7 @@ a.more-link:hover {
 }
 
 .link-quiet:hover {
-  color: #fff;
+  color: var(--text-hover);
 }
 
 [data-header] {
@@ -361,8 +486,16 @@ a.more-link:hover {
 }
 
 [data-header].is-stuck {
-  background: rgb(9 9 9 / 88%);
-  box-shadow: inset 0 -1px 0 rgb(255 255 255 / 8%);
+  background: var(--header-bg);
+  box-shadow: inset 0 -1px 0 var(--header-line);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* In light mode the bar is always solid: dark text never floats over the dark hero. */
+:root[data-theme="light"] [data-header] {
+  background: var(--header-bg);
+  box-shadow: inset 0 -1px 0 var(--header-line);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -414,6 +547,16 @@ a.more-link:hover {
   transform: rotate(180deg);
 }
 
+:root[data-theme="light"] .gold-rule {
+  background: linear-gradient(90deg, transparent, #a8743a 35%, #855619);
+  box-shadow: none;
+}
+
+:root[data-theme="light"] .theme-dark .gold-rule {
+  background: linear-gradient(90deg, transparent, #b9854b 35%, #e5b978);
+  box-shadow: 0 0 6px rgba(202, 142, 70, 0.35);
+}
+
 .field-input,
 .field-select,
 .field-area {
@@ -444,15 +587,20 @@ a.more-link:hover {
 .field-input[aria-invalid="true"],
 .field-select[aria-invalid="true"],
 .field-area[aria-invalid="true"] {
-  border-color: #fff;
+  border-color: var(--color-heading);
 }
 
 .field-select {
   appearance: none;
-  background-image: linear-gradient(45deg, transparent 50%, #d9ac66 50%), linear-gradient(135deg, #d9ac66 50%, transparent 50%);
+  background-image: linear-gradient(45deg, transparent 50%, var(--color-gold) 50%), linear-gradient(135deg, var(--color-gold) 50%, transparent 50%);
   background-position: calc(100% - 14px) 55%, calc(100% - 8px) 55%;
   background-size: 6px 6px, 6px 6px;
   background-repeat: no-repeat;
+}
+
+.field-select option {
+  background: var(--color-surface);
+  color: var(--color-steel);
 }
 
 .hp {
@@ -478,6 +626,8 @@ a.more-link:hover {
   [data-header],
   .btn-steel,
   .btn-ghost,
+  .icon-button,
+  .brand-mark,
   .trade-link,
   .product-card,
   .product-card .catalog-media img {
@@ -501,7 +651,7 @@ label:has(input[type="radio"]:checked) {
 }
 
 input:-webkit-autofill {
-  -webkit-text-fill-color: #d5d6d8;
-  caret-color: #d5d6d8;
-  box-shadow: 0 0 0 1000px #090909 inset;
+  -webkit-text-fill-color: var(--color-steel);
+  caret-color: var(--color-steel);
+  box-shadow: 0 0 0 1000px var(--color-ink) inset;
 }

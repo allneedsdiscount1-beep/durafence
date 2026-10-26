@@ -14,22 +14,22 @@ import { site } from '../data/site';
     <div class="py-4">
       <label class="kicker" for="quote-name">Name</label>
       <input class="field-input mt-2" id="quote-name" name="name" autocomplete="name" maxlength="120" />
-      <p class="mt-2 text-sm text-white" id="quote-name-error" data-error-for="name" hidden></p>
+      <p class="mt-2 text-sm text-heading" id="quote-name-error" data-error-for="name" hidden></p>
     </div>
     <div class="py-4">
       <label class="kicker" for="quote-phone">Phone</label>
       <input class="field-input mt-2" id="quote-phone" name="phone" type="tel" autocomplete="tel" maxlength="40" inputmode="tel" />
-      <p class="mt-2 text-sm text-white" id="quote-phone-error" data-error-for="phone" hidden></p>
+      <p class="mt-2 text-sm text-heading" id="quote-phone-error" data-error-for="phone" hidden></p>
     </div>
     <div class="py-4">
       <label class="kicker" for="quote-email">Email</label>
       <input class="field-input mt-2" id="quote-email" name="email" type="email" autocomplete="email" maxlength="120" />
-      <p class="mt-2 text-sm text-white" id="quote-email-error" data-error-for="email" hidden></p>
+      <p class="mt-2 text-sm text-heading" id="quote-email-error" data-error-for="email" hidden></p>
     </div>
     <div class="py-4">
       <label class="kicker" for="quote-city">City</label>
       <input class="field-input mt-2" id="quote-city" name="city" autocomplete="address-level2" maxlength="80" />
-      <p class="mt-2 text-sm text-white" id="quote-city-error" data-error-for="city" hidden></p>
+      <p class="mt-2 text-sm text-heading" id="quote-city-error" data-error-for="city" hidden></p>
     </div>
   </div>
 
@@ -45,7 +45,7 @@ import { site } from '../data/site';
         <span>Commercial</span>
       </label>
     </div>
-    <p class="mt-2 text-sm text-white" id="quote-property-error" data-error-for="property" hidden></p>
+    <p class="mt-2 text-sm text-heading" id="quote-property-error" data-error-for="property" hidden></p>
   </fieldset>
 
   <fieldset class="mt-8 border-0 p-0">
@@ -68,7 +68,7 @@ import { site } from '../data/site';
         <span>Parts or other request</span>
       </label>
     </div>
-    <p class="mt-2 text-sm text-white" id="quote-work-error" data-error-for="work" hidden></p>
+    <p class="mt-2 text-sm text-heading" id="quote-work-error" data-error-for="work" hidden></p>
   </fieldset>
 
   <div class="mt-8 py-4">
@@ -80,13 +80,13 @@ import { site } from '../data/site';
       <option value="over-300">More than 300 ft</option>
       <option value="unknown">I don't know yet</option>
     </select>
-    <p class="mt-2 text-sm text-white" id="quote-length-error" data-error-for="length" hidden></p>
+    <p class="mt-2 text-sm text-heading" id="quote-length-error" data-error-for="length" hidden></p>
   </div>
 
   <div class="mt-8">
     <label class="kicker" for="quote-message">Products and project details</label>
     <textarea class="field-area mt-3" id="quote-message" name="message" maxlength="2000" placeholder="Fence height and finish, gate type and width, part names and quantities, or drawings needed."></textarea>
-    <p class="mt-2 text-sm text-white" id="quote-message-error" data-error-for="message" hidden></p>
+    <p class="mt-2 text-sm text-heading" id="quote-message-error" data-error-for="message" hidden></p>
   </div>
 
   <div class="mt-8 flex flex-wrap items-center gap-5">

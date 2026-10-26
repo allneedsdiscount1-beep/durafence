@@ -9,35 +9,46 @@ const phone = site.phone.trim();
 
 <header data-header class="fixed inset-x-0 top-0 z-40">
   <div class="mx-auto flex h-[var(--header-h)] w-full max-w-[1120px] items-center gap-6 px-5 pt-[env(safe-area-inset-top,0px)] sm:px-8">
-    <a href="/" class="flex items-center gap-3 text-steel no-underline" aria-label={`${site.name} home`}>
+    <a href="/" class="flex shrink-0 items-center gap-3 text-steel no-underline" aria-label={`${site.name} home`}>
       <Monogram idPrefix="nav" crop class="h-10 w-11" />
-      <span class="font-display hidden text-[13px] tracking-[.04em] sm:inline">{site.shortName}</span>
+      <span class="font-display hidden text-[14px] tracking-[.06em] sm:inline">{site.shortName}</span>
     </a>
 
     <nav class="ml-auto hidden items-center gap-7 lg:flex" aria-label="Primary">
       {nav.map((item) => (
-        <a class="nav-link" href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
+        <a class="nav-link whitespace-nowrap" href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
       ))}
-      {phone && <a class="nav-link" href={telHref(phone)}>Call</a>}
-      <a class="btn-steel" href="/quote/" aria-current={isCurrent('/quote/') ? 'page' : undefined}>Request a quote</a>
     </nav>
 
-    <div class="ml-auto flex items-center gap-3 lg:hidden">
-      {phone && <a class="nav-link" href={telHref(phone)}>Call</a>}
-      <a class="btn-steel" href="/quote/">Quote</a>
-      <button type="button" class="nav-link" data-menu-button aria-expanded="false" aria-controls="site-menu">Menu</button>
+    <div class="ml-auto flex items-center gap-3 lg:ml-0 lg:gap-6">
+      {phone && (
+        <a class="phone-link" href={telHref(phone)} aria-label={`Call ${phone}`}>
+          <svg viewBox="0 0 24 24" class="h-[18px] w-[18px] text-gold" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2"></path></svg>
+          <span class="hidden xl:inline">{phone}</span>
+        </a>
+      )}
+      <span class="hidden sm:contents"><a class="btn-steel" href="/quote/" aria-current={isCurrent('/quote/') ? 'page' : undefined}>Request a quote</a></span>
+      <span class="contents sm:hidden"><a class="btn-steel" href="/quote/">Quote</a></span>
+      <span class="contents lg:hidden">
+        <button type="button" class="icon-button" data-menu-button aria-expanded="false" aria-controls="site-menu" aria-label="Menu">
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+        </button>
+      </span>
     </div>
   </div>
 </header>
 
 <div id="site-menu" data-menu hidden class="fixed inset-0 z-50 flex flex-col bg-ink px-6 pt-[var(--header-h)] pb-10" role="dialog" aria-modal="true" aria-label="Menu">
   <div class="flex justify-end">
-    <button type="button" class="nav-link" data-menu-close>Close</button>
+    <button type="button" class="icon-button" data-menu-close aria-label="Close">
+      <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+    </button>
   </div>
   <nav class="mt-12 flex flex-col gap-7" aria-label="Mobile">
     {nav.map((item) => (
       <a class="text-3xl font-semibold tracking-tight text-steel no-underline" href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
     ))}
+    {phone && <a class="text-xl font-semibold text-gold no-underline" href={telHref(phone)}>{phone}</a>}
     <a class="btn-steel mt-4 w-fit" href="/quote/">Request a quote</a>
   </nav>
   <p class="mt-auto pt-10 text-xs tracking-[.35em] text-muted uppercase">{site.region}</p>

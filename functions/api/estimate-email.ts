@@ -11,10 +11,9 @@ import {
 } from '../../src/data/estimate-mail.ts';
 import { PdfLayoutOverflowError } from '../../src/pdf/layout-error.ts';
 import { validateUsAddress } from '../../src/data/us-address.ts';
+import { estimateCopies, type InboxEnv } from '../../src/data/inboxes.ts';
 
-export const estimateCopies = ['abelterreros@yahoo.com', 'terrerov@gmail.com', 'allneedsdiscount1@gmail.com'] as const;
-
-export interface EstimateEmailEnv {
+export interface EstimateEmailEnv extends InboxEnv {
   RESEND_API_KEY?: string;
   // Compatibility with the name already configured in Cloudflare.
   RESENT_API_KEY?: string;
@@ -34,11 +33,6 @@ function json(body: unknown, status = 200): Response {
 
 function fail(status: number, error: string, message: string, fields?: Record<string, string>): Response {
   return json({ ok: false, error, message, fields }, status);
-}
-
-function copiesFor(to: string): string[] {
-  const target = to.toLowerCase();
-  return estimateCopies.filter((address) => address.toLowerCase() !== target);
 }
 
 async function overLimit(request: Request): Promise<boolean> {
@@ -104,7 +98,7 @@ export async function onRequestPost(context: { request: Request; env: EstimateEm
   }
   const draft = draftEstimateEmail(letter);
 
-  const copies = copiesFor(letter.customer.email);
+  const copies = estimateCopies(env, letter.customer.email);
   try {
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',

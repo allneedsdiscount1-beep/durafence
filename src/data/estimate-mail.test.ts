@@ -3,12 +3,14 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { onRequestPost as onQuote } from '../../functions/api/quote.ts';
 import { PDFDocument } from 'pdf-lib';
-import { estimateCopies, onRequestPost } from '../../functions/api/estimate-email.ts';
+import { onRequestPost } from '../../functions/api/estimate-email.ts';
 import { draftEstimateEmail, prepareEstimateLetter, type EstimateLetter } from './estimate-mail.ts';
 import { buildEstimatePdf } from './estimate-pdf.ts';
 import worker from '../../worker/index.ts';
 
 const sentOn = 'September 25, 2026';
+// Synthetic inboxes; the real ones are Cloudflare secrets.
+const inboxEnv = { CONTACT_INBOXES: 'office@example.test, owner@example.test', ESTIMATE_COPIES: 'sales@example.test,owner@example.test,office@example.test' };
 
 function requestBody(over: Record<string, unknown> = {}) {
   return {
@@ -135,14 +137,14 @@ describe('POST /api/estimate-email with Resend', () => {
         sent.push(JSON.parse(options.body));
         return Response.json({ id: 'test-message' });
       });
-      const response = await onRequestPost({ request: request(), env: { [key]: 'test-key' }, validateAddress });
+      const response = await onRequestPost({ request: request(), env: { [key]: 'test-key', ...inboxEnv }, validateAddress });
       assert.equal(response.status, 200);
       assert.equal(sent.length, 1);
       const message = sent[0];
       assert.equal(message.from, 'Dura Fence Metal <invoice@durafencemetal.com>');
       assert.equal(message.reply_to, 'invoice@durafencemetal.com');
       assert.equal(message.to, 'jose@example.com');
-      assert.deepEqual(message.bcc, [...estimateCopies]);
+      assert.deepEqual(message.bcc, ['sales@example.test', 'owner@example.test', 'office@example.test']);
       assert.match(message.text, /Total: \$4,000\.00/);
       assert.equal(message.attachments[0].content_type, 'application/pdf');
       assert.equal(message.attachments[0].filename, 'dura-fence-estimate.pdf');
@@ -154,12 +156,12 @@ describe('POST /api/estimate-email with Resend', () => {
 
   it('does not copy an address that is already the customer', async (t) => {
     t.mock.method(globalThis, 'fetch', async (_url, options) => {
-      assert.deepEqual(JSON.parse(options.body).bcc, ['terrerov@gmail.com', 'allneedsdiscount1@gmail.com']);
+      assert.deepEqual(JSON.parse(options.body).bcc, ['owner@example.test', 'office@example.test']);
       return Response.json({ id: 'test-message' });
     });
     const body = requestBody();
-    body.customer.email = 'AbelTerreros@yahoo.com';
-    assert.equal((await onRequestPost({ request: request(body), env: { RESEND_API_KEY: 'test' }, validateAddress })).status, 200);
+    body.customer.email = 'Sales@Example.test';
+    assert.equal((await onRequestPost({ request: request(body), env: { RESEND_API_KEY: 'test', ...inboxEnv }, validateAddress })).status, 200);
   });
 
   for (const [providerStatus, expected] of [[401, 503], [403, 503], [429, 429], [500, 502]]) {
@@ -199,7 +201,7 @@ for (const key of ['RESEND_API_KEY', 'RESENT_API_KEY']) {
     const fetch = t.mock.method(globalThis, 'fetch', async (_url, options) => {
       assert.equal(options.headers.authorization, 'Bearer test-key');
       const message = JSON.parse(options.body);
-      assert.deepEqual(message.to, ['allneedsdiscount1@gmail.com', 'terrerov@gmail.com']);
+      assert.deepEqual(message.to, ['office@example.test', 'owner@example.test']);
       assert.equal(message.from, 'Dura Fence Metal <info@durafencemetal.com>');
       assert.equal(message.reply_to, 'customer@example.com');
       return Response.json({ id: 'quote-message' });
@@ -209,12 +211,25 @@ for (const key of ['RESEND_API_KEY', 'RESENT_API_KEY']) {
         method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' },
         body: JSON.stringify({ name: 'Customer', email: 'customer@example.com', city: 'Valdosta', property: 'residential', work: 'new' }),
       }),
-      env: { [key]: 'test-key' },
+      env: { [key]: 'test-key', ...inboxEnv },
     });
     assert.equal(response.status, 200);
     assert.equal(fetch.mock.callCount(), 1);
   });
 }
+
+it('quote form does not send without configured inboxes', async (t) => {
+  const fetch = t.mock.method(globalThis, 'fetch', async () => { throw new Error('unexpected send'); });
+  const response = await onQuote({
+    request: new Request('https://durafencemetal.com/api/quote', {
+      method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({ name: 'Customer', email: 'customer@example.com', city: 'Valdosta', property: 'residential', work: 'new' }),
+    }),
+    env: { RESEND_API_KEY: 'test-key' },
+  });
+  assert.equal(response.status, 503);
+  assert.equal(fetch.mock.callCount(), 0);
+});
 
 it('forwards incoming mail for the public info address to both recipients', async () => {
   const forwarded: string[] = [];
@@ -223,8 +238,8 @@ it('forwards incoming mail for the public info address to both recipients', asyn
     to: 'INFO@durafencemetal.com',
     async forward(address: string) { forwarded.push(address); },
     setReject(reason: string) { rejected.push(reason); },
-  });
-  assert.deepEqual(forwarded, ['allneedsdiscount1@gmail.com', 'terrerov@gmail.com']);
+  }, inboxEnv);
+  assert.deepEqual(forwarded, ['office@example.test', 'owner@example.test']);
   assert.deepEqual(rejected, []);
 });
 
@@ -235,12 +250,12 @@ it('still forwards contact mail to the second recipient if the first fails', asy
   await worker.email({
     to: 'info@durafencemetal.com',
     async forward(address: string) {
-      if (address === 'allneedsdiscount1@gmail.com') throw new Error('unavailable');
+      if (address === 'office@example.test') throw new Error('unavailable');
       forwarded.push(address);
     },
     setReject(reason: string) { rejected.push(reason); },
-  });
-  assert.deepEqual(forwarded, ['terrerov@gmail.com']);
+  }, inboxEnv);
+  assert.deepEqual(forwarded, ['owner@example.test']);
   assert.deepEqual(rejected, []);
 });
 

@@ -1,9 +1,10 @@
 import { handleInvoiceArea, isInvoiceArea, type InvoiceEnv } from './invoice-api.ts';
-import { estimateCopies, onRequestPost as onEstimateEmail } from '../functions/api/estimate-email.ts';
+import { onRequestPost as onEstimateEmail } from '../functions/api/estimate-email.ts';
 import { onRequestGet as onEstimateAddress } from '../functions/api/estimate-address.ts';
 import { onRequestPost } from '../functions/api/quote.ts';
 import { invoiceAddress } from '../src/data/estimate-mail.ts';
-import { contactAddress, contactInboxes } from '../src/data/site.ts';
+import { contactAddress } from '../src/data/site.ts';
+import { contactInboxes, estimateCopies } from '../src/data/inboxes.ts';
 import { onRequestPost as onShopCheckout } from '../functions/api/shop-checkout.ts';
 
 const CANONICAL_HOST = 'durafencemetal.com';
@@ -32,10 +33,10 @@ function needsTrailingSlash(pathname: string): boolean {
 }
 
 export default {
-  async email(message: ForwardableMail): Promise<void> {
+  async email(message: ForwardableMail, env: Env): Promise<void> {
     if (sameAddress(message.to, contactAddress)) {
       let delivered = 0;
-      for (const inbox of contactInboxes) {
+      for (const inbox of contactInboxes(env)) {
         try {
           await message.forward(inbox);
           delivered += 1;
@@ -54,7 +55,7 @@ export default {
       return;
     }
     let delivered = 0;
-    for (const copy of estimateCopies) {
+    for (const copy of estimateCopies(env)) {
       try {
         await message.forward(copy);
         delivered += 1;

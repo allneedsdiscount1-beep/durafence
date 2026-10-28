@@ -1,7 +1,6 @@
 /** Public facts for Dura Fence Metal. */
 
 export const contactAddress = 'info@durafencemetal.com';
-export const contactInboxes = ['allneedsdiscount1@gmail.com', 'terrerov@gmail.com'] as const;
 
 export const siteUrl = 'https://durafencemetal.com';
 

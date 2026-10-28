@@ -3,11 +3,11 @@ import { PdfLayoutOverflowError, PDF_OVERFLOW_ES } from '../src/pdf/layout-error
 import { buildInvoicePdf } from '../src/invoice/pdf.ts';
 import { bytesToBase64 } from '../src/data/estimate-pdf.ts';
 import { invoiceAddress } from '../src/data/estimate-mail.ts';
-import { estimateCopies } from '../functions/api/estimate-email.ts';
+import { estimateCopies, type InboxEnv } from '../src/data/inboxes.ts';
 import { accessConfigured, authenticateInvoice, privateHeaders, type InvoiceAccessEnv } from './invoice-auth.ts';
 import { InvoiceStore, Conflict, isCreationKey, type InvoiceDB } from './invoice-store.ts';
 
-export interface InvoiceEnv extends InvoiceAccessEnv {
+export interface InvoiceEnv extends InvoiceAccessEnv, InboxEnv {
   INVOICE_DB?: InvoiceDB;
   ASSETS: { fetch(request: Request): Promise<Response> };
   RESEND_API_KEY?: string;
@@ -110,13 +110,14 @@ async function sendInvoice(invoice: StoredInvoice, store: InvoiceStore, env: Inv
     'Balance: ' + totals.balanceCents / 100 + ' USD', '',
     siteContact(),
   ].join('\n');
+  const copies = estimateCopies(env, invoice.order.customer.email);
   try {
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { authorization: 'Bearer ' + apiKey, 'content-type': 'application/json', 'idempotency-key': key },
       body: JSON.stringify({
         from: 'Dura Fence Metal <' + invoiceAddress + '>', to: invoice.order.customer.email,
-        bcc: estimateCopies.filter((address) => address.toLowerCase() !== invoice.order.customer.email.toLowerCase()),
+        ...(copies.length > 0 ? { bcc: copies } : {}),
         reply_to: invoiceAddress, subject: title + ' ' + invoice.number, text,
         attachments: [{ content: bytesToBase64(bytes), filename: invoice.number + '.pdf', content_type: 'application/pdf' }],
       }),

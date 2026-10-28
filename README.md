@@ -112,8 +112,7 @@ Si conectas el repositorio al Worker, el comando de build es `npm run build` y e
 
 El botón **Email PDF** en `/estimate/` envía el PDF con Resend desde
 `Dura Fence Metal <invoice@durafencemetal.com>`. El destinatario es el cliente;
-las copias ocultas van a los buzones definidos en `estimateCopies`
-(`functions/api/estimate-email.ts`). Los envíos del dashboard `/invoice` usan las mismas copias.
+las copias ocultas van a los buzones del secreto `ESTIMATE_COPIES`. Los envíos del dashboard `/invoice` usan las mismas copias.
 El Worker recalcula los precios y genera el PDF antes de enviarlo.
 El campo **Project address** consulta [Photon](https://github.com/komoot/photon) para sugerir direcciones de EE. UU. y el [Censo de EE. UU.](https://www.census.gov/programs-surveys/geography/technical-documentation/complete-technical-documentation/census-geocoder.html) para comprobar la dirección al salir del campo y antes del envío. No requiere una clave adicional. La coincidencia del Censo se basa en rangos de direcciones y no confirma la existencia física de una vivienda ni su entregabilidad postal. El servidor público de Photon puede limitar las consultas; si eso ocurre, el cliente puede escribir la dirección completa manualmente.
 **Print / Save PDF** conserva la hoja original de impresión del navegador, con
@@ -131,6 +130,11 @@ Configuración de producción:
    También se acepta `RESENT_API_KEY`, el nombre configurado inicialmente;
    si ambos existen, tiene prioridad `RESEND_API_KEY`.
    Una variable de **Builds** por sí sola no está disponible en `env` del Worker.
+   En el mismo lugar guarda dos secretos con direcciones separadas por comas:
+   `CONTACT_INBOXES` (destino de `/quote/` y del correo público) y
+   `ESTIMATE_COPIES` (copias ocultas de estimados e invoices).
+   Los buzones privados nunca se escriben en el repositorio. Sin `CONTACT_INBOXES`,
+   `/quote/` responde 503; sin `ESTIMATE_COPIES`, los estimados se envían sin copias.
    No uses el prefijo `PUBLIC_` ni guardes claves en GitHub o `wrangler.jsonc`.
 4. Publica los cambios en la rama conectada a Cloudflare y espera un deploy exitoso.
 5. Desde `/estimate/`, completa un estimado con un destinatario de prueba propio
@@ -138,7 +142,7 @@ Configuración de producción:
 
 El formulario `/quote/` usa la misma clave de Resend. Envía desde
 la dirección pública del negocio (`contactAddress` en `src/data/site.ts`)
-directamente a los buzones de `contactInboxes` en el mismo archivo; las variables antiguas `QUOTE_FROM` y `QUOTE_TO`
+directamente a los buzones del secreto `CONTACT_INBOXES`; las variables antiguas `QUOTE_FROM` y `QUOTE_TO`
 ya no controlan este destino.
 
 Resend se utiliza para el envío; no requiere Cloudflare Email Sending ni su binding.
@@ -148,10 +152,10 @@ bandejas del negocio, que solo funciona con la regla y destinos verificados.
 
 Para recibir correos enviados directamente a la dirección pública o
 respuestas al remitente del formulario, activa Cloudflare Email Routing para el
-dominio. Verifica los buzones de `contactInboxes` como
+dominio. Verifica los buzones de `CONTACT_INBOXES` como
 direcciones de destino y crea
 una regla para la dirección pública con acción **Send to a Worker**,
-seleccionando `durafence`. El manejador del Worker reenvía esos mensajes a ambas bandejas.
+seleccionando `durafence`. El manejador del Worker reenvía esos mensajes a esas bandejas.
 Confirma además que los registros MX de Email Routing sigan activos.
 
 Si una clave fue compartida en un chat, revócala y reemplaza el secreto en Cloudflare.

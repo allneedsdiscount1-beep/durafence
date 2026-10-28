@@ -80,8 +80,8 @@ not proof of delivery to the recipient's inbox.
 
 Runtime secret: `RESEND_API_KEY` (legacy `RESENT_API_KEY` also supported).
 Sender: `Dura Fence Metal <invoice@durafencemetal.com>`; reply-to:
-`info@durafencemetal.com`; customer is `to`, business is `bcc`. The verified Resend
-domain and receiving/forwarding rule for `info@durafencemetal.com` must work.
+the public business address; customer is `to`, business is `bcc`. The verified Resend
+domain and receiving/forwarding rule for the public address must work.
 Secrets stay in Cloudflare runtime settings, never public build variables.
 
 The honeypot silently discards spam. The 20 KB request limit is enforced while
@@ -99,7 +99,7 @@ limit. No order database or payment provider is added.
 3. Deploy the reviewed build using `npx wrangler deploy`. Do not include unrelated
    local changes in the publication without review. Production HTTPS must be active.
 4. With an authorized test recipient, submit a test order and verify the PDF in
-   the recipient inbox, Resend delivery logs and `info@durafencemetal.com`.
+   the recipient inbox, Resend delivery logs and the public business inbox.
 5. The owner enters the final URL in Commerce Manager and tests the real redirect.
    Device emulation cannot verify Facebook's in-app browser or Meta approval.
 
@@ -125,7 +125,7 @@ existing local changes, as requested by the owner. Previous active version:
   overflow or JavaScript errors. Facebook's in-app browser still needs an actual
   shop redirect test by the owner.
 - Production checkout and `/estimate/` returned their expected compiled HTML.
-- The authorized real test was sent to `info@durafencemetal.com` and found in its
+- The authorized real test was sent to the public business address and found in its
   forwarded Gmail inbox, with the PDF attached. The PDF's extracted text confirmed
   100 ft Premium Installed + one extra 6 ft gate = $4,500, deposit $1,125, and the
   final-measurement disclaimer. Test reference:
@@ -194,7 +194,7 @@ Published version: `8ae1ac67-f1fd-4f94-9a59-6326377ee3bd`. The URL remains
   errors. Single-fence and legacy `item` imports still worked.
 - PDF extraction confirmed all seven product lines and the $3,740 total for two
   of each product. The production `/estimate/` HTML was byte-for-byte unchanged.
-- The authorized real test reached `info@durafencemetal.com`, confirmed in its
+- The authorized real test reached the public business address, confirmed in its
   forwarded Gmail inbox with the PDF attached. Extracted PDF text confirmed
   Premium Installed 100 ft ($4,000), Standard Installed 50 ft ($1,750) and one
   extra 6 ft gate ($500): total $6,250 and deposit $1,562.50. Test reference:

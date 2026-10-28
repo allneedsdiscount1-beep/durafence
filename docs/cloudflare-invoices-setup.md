@@ -39,7 +39,7 @@ Crear una unica aplicacion Self-hosted llamada Dura Fence Invoices con estos des
 
 El path padre protege sus descendientes si no existe otra aplicacion mas especifica que reemplace la politica. Revisar posibles solapamientos. Una regla que termina solo en /* no cubre el path padre. Mantener pagina y API en la misma aplicacion para que compartan AUD. No proteger el dominio publico completo.
 
-Seleccionar One-time PIN como metodo de inicio de sesion, sin habilitar proveedores adicionales para esta aplicacion. Crear una politica Allow cuyo selector Emails contenga solo terrerov@gmail.com; no usar Everyone ni un dominio completo. Sesion propuesta: 8 horas.
+Seleccionar One-time PIN como metodo de inicio de sesion, sin habilitar proveedores adicionales para esta aplicacion. Crear una politica Allow cuyo selector Emails contenga solo los correos autorizados por el propietario, sin registrarlos en el repositorio; no usar Everyone ni un dominio completo. Sesion propuesta: 8 horas.
 
 Copiar el Team domain y el Application Audience (AUD). Configurar en el Worker:
 

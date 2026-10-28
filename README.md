@@ -3,7 +3,7 @@
 Sitio de Astro para [durafencemetal.com](https://durafencemetal.com).
 
 El checkout independiente de Facebook está en `/shop-checkout/` y envía un PDF
-estimado al cliente con copia a `info@durafencemetal.com`.
+estimado al cliente con copia al correo público del negocio.
 Configuración, parámetros y pruebas: [checkout de Facebook](docs/shop-checkout.md).
 
 ## Cloudflare
@@ -112,8 +112,8 @@ Si conectas el repositorio al Worker, el comando de build es `npm run build` y e
 
 El botón **Email PDF** en `/estimate/` envía el PDF con Resend desde
 `Dura Fence Metal <invoice@durafencemetal.com>`. El destinatario es el cliente;
-las copias ocultas van a `abelterreros@yahoo.com`, `terrerov@gmail.com` y
-`allneedsdiscount1@gmail.com`. Los envíos del dashboard `/invoice` usan las mismas copias.
+las copias ocultas van a los buzones definidos en `estimateCopies`
+(`functions/api/estimate-email.ts`). Los envíos del dashboard `/invoice` usan las mismas copias.
 El Worker recalcula los precios y genera el PDF antes de enviarlo.
 El campo **Project address** consulta [Photon](https://github.com/komoot/photon) para sugerir direcciones de EE. UU. y el [Censo de EE. UU.](https://www.census.gov/programs-surveys/geography/technical-documentation/complete-technical-documentation/census-geocoder.html) para comprobar la dirección al salir del campo y antes del envío. No requiere una clave adicional. La coincidencia del Censo se basa en rangos de direcciones y no confirma la existencia física de una vivienda ni su entregabilidad postal. El servidor público de Photon puede limitar las consultas; si eso ocurre, el cliente puede escribir la dirección completa manualmente.
 **Print / Save PDF** conserva la hoja original de impresión del navegador, con
@@ -137,9 +137,8 @@ Configuración de producción:
    y pulsa **Email PDF**. Confirma la entrega en Resend → Emails y en la bandeja.
 
 El formulario `/quote/` usa la misma clave de Resend. Envía desde
-`Dura Fence Metal <info@durafencemetal.com>` directamente a
-`allneedsdiscount1@gmail.com` y `terrerov@gmail.com`. La dirección pública del sitio es
-`info@durafencemetal.com`; las variables antiguas `QUOTE_FROM` y `QUOTE_TO`
+la dirección pública del negocio (`contactAddress` en `src/data/site.ts`)
+directamente a los buzones de `contactInboxes` en el mismo archivo; las variables antiguas `QUOTE_FROM` y `QUOTE_TO`
 ya no controlan este destino.
 
 Resend se utiliza para el envío; no requiere Cloudflare Email Sending ni su binding.
@@ -147,11 +146,11 @@ Las respuestas a `invoice@durafencemetal.com` requieren un buzón o una regla de
 Email Routing separada. El Worker conserva su manejador de reenvío a las dos
 bandejas del negocio, que solo funciona con la regla y destinos verificados.
 
-Para recibir correos enviados directamente a `info@durafencemetal.com` o
+Para recibir correos enviados directamente a la dirección pública o
 respuestas al remitente del formulario, activa Cloudflare Email Routing para el
-dominio. Verifica `allneedsdiscount1@gmail.com` y `terrerov@gmail.com` como
+dominio. Verifica los buzones de `contactInboxes` como
 direcciones de destino y crea
-una regla para `info@durafencemetal.com` con acción **Send to a Worker**,
+una regla para la dirección pública con acción **Send to a Worker**,
 seleccionando `durafence`. El manejador del Worker reenvía esos mensajes a ambas bandejas.
 Confirma además que los registros MX de Email Routing sigan activos.
 

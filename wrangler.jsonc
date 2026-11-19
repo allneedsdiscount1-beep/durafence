@@ -18,12 +18,14 @@
     {
       "binding": "INVOICE_DB",
       "database_name": "durafence-invoices",
-      "database_id": "cb404974-0c88-4da1-b799-164421bc7271",
+      "database_id": "b4c88e87-9c40-4f89-a40b-84da797f878f",
       "migrations_dir": "migrations"
     }
   ],
   "vars": {
     "INVOICE_ACCESS_ISSUER": "https://terrerov.cloudflareaccess.com",
-    "INVOICE_ACCESS_AUD": "71654abaf71951ce0b2eaffb0b9bc42feec42464c8e44ffe23beee995e717f43"
+    "INVOICE_ACCESS_AUD": "71654abaf71951ce0b2eaffb0b9bc42feec42464c8e44ffe23beee995e717f43",
+    "CONTACT_INBOXES": "info@durafencemetal.com",
+    "ESTIMATE_COPIES": "info@durafencemetal.com"
   }
 }
